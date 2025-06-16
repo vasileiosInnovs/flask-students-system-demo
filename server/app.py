@@ -30,9 +30,16 @@ def uploads(filename):
 def students():
     
     students = Student.query.all()
-    students_data = [{"name": student.name} for student in students]
+    students_data = [student.to_dict() for student in students]
 
     return students_data, 200
+
+@app.route('/students/<int:id>')
+def students_id(id):
+    
+    student = Student.query.filter(Student.id==id).first()
+
+    return student.to_dict(), 200
 
 
 # MISSING MODULE psycopg2
