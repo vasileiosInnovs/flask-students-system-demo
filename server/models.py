@@ -27,20 +27,21 @@ class Course(db.Model, SerializerMixin):
     serialize_rules = ("-enrollments.course",)
 
 
-class Gender(db.Model):
-    __tablename__ = "gender"
+class Grade(db.Model, SerializerMixin):
+    __tablename__ = "grades"
 
     id = Column(Integer(), primary_key=True)
     name = Column(String())
 
 class Enrollment(db.Model, SerializerMixin):
     __tablename__ = "enrollments"
-
+             
     id = Column(Integer(), primary_key=True)
     student_id = Column(Integer(), ForeignKey("students.id", ondelete="CASCADE"))
     course_id = Column(Integer(), ForeignKey("courses.id", ondelete="CASCADE"))
+    grade = Column(String())
 
     student = relationship("Student", back_populates="enrollments")
     course = relationship("Course", back_populates="enrollments")
 
-    serialize_rules = ("-student.enrollments", "-course.enrollments")
+    serialize_rules = ("-student.enrollments", "-course.enrollments",)
