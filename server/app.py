@@ -31,16 +31,19 @@ def uploads(filename):
 def students():
 
     if request.method == 'GET':
-        students = Student.query.all()
-        students_data = [student.to_dict() for student in students]
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        students = Student.query.paginate(page, per_page, False)
+        students_data = [student.to_dict() for student in students.items]
 
-        return students_data, 200
+        return jsonify(students_data), 200
     
     elif request.method == 'POST':
         new_student = Student(
             name=request.form.get("name"),
             age=request.form.get("age")
         )
+
 
         db.session.add(new_student)
         db.session.commit()
