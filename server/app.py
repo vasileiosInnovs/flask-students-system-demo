@@ -2,6 +2,7 @@ from flask import Flask, send_file, request, jsonify, make_response
 from models import db, Student, Enrollment, Course
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+import psycopg2
 
 load_dotenv()
 
@@ -59,6 +60,14 @@ def students_id(id):
     student = Student.query.filter(Student.id==id).first()
 
     return student.to_dict(), 200
+
+@app.route('/students/<int:id>/courses', methods=['GET'])
+def student_courses(id):
+    student = Student.query.filter(Student.id == id).first_or_404()
+
+    courses = [enrollment.course.to_dict() for enrollment in student.enrollments]
+
+    return jsonify(courses), 200
 
 #GET POST courses
 @app.route('/courses', methods=['GET', 'POST'])
@@ -125,6 +134,23 @@ def enrollments():
         )
 
         return response
+    
+@app.route('/enrollments/<int:id>', methods=['PUT'])
+def update_enrollment(id):
+    enrollment = Enrollment.query.filter(Enrollment.id == id).first_or_404()
+    grade = request.form.get('grade')
+
+    if grade:
+        enrollment.grade = grade
+        db.session.commit()
+
+        response = make_response(
+            jsonify(enrollment.to_dict()),
+            200
+        )
+        return response
+
+    return jsonify({"message": "Grade is required"}), 400
     
 @app.route('/enrollments/<int:id>')
 def enrollment_by_id():
