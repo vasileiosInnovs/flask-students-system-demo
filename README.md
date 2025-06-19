@@ -14,4 +14,4 @@ FLASK_SQLALCHEMY_DATABASE_URI=postgresql://username:password@localhost:5433/db
 FLASH_HASHSECRET = ALDSFJLKSAJDFLJASDLFJWERJLjowieofjsd
 ```
 
-Change the connection string to suit your need
+Change the connection string to suit your need# student-management-system-api
